@@ -15,7 +15,7 @@ resource "aws_instance" "example" {
   user_data = <<-EOF
               #!/bin/bash
               echo "Hello, World!" > index.html
-              nohup busybox httpd -f -p 80 &
+              nohup python3 -m http.server 80 &
               EOF
     user_data_replace_on_change = true
     tags = {
@@ -32,4 +32,11 @@ resource "aws_security_group" "allow_http" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
+egress {
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 }
