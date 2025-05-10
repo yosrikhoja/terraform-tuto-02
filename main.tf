@@ -17,13 +17,13 @@ resource "aws_instance" "example" {
               echo "Hello, World!" > index.html
               nohup busybox httpd -f -p 8080 &
               EOF
-              user_data_replace_on_change = true
+    user_data_replace_on_change = true
     tags = {
     Name = "server"
   }
 }
 resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
+  name        = "web"
   description = "Allow HTTP traffic"
 
   ingress {
