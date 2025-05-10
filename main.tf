@@ -14,10 +14,6 @@ resource "aws_instance" "example" {
   vpc_security_group_ids = [aws_security_group.allow_http.id]
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y httpd
-              systemctl start httpd
-              systemctl enable httpd
               echo "Hello, World!" > index.html
               nohup busybox httpd -f -p 8080 &
               EOF
