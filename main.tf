@@ -84,7 +84,7 @@ resource "aws_launch_template" "example" {
 resource "aws_lb" "example" {
   name               = "example-lb"
   load_balancer_type = "application"
-  subnets            = [data.aws_subnets.selected.id] # ✅ List format required
+  subnets            = data.aws_subnets.selected.ids # ✅ List format required
   security_groups    = [aws_security_group.alb.id]
 }
 
