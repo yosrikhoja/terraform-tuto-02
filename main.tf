@@ -68,20 +68,19 @@ resource "aws_security_group" "alb" {
 }
 
 # Launch Configuration for Auto Scaling Group
-resource "aws_launch_configuration" "example" {
-  image_id        = "ami-0f88e80871fd81e91"
-  instance_type   = "t3.micro"
-  security_groups = [aws_security_group.allow_http.id]
+resource "aws_launch_template" "example" {
+  name_prefix   = "example-"
+  image_id      = "ami-0f88e80871fd81e91"
+  instance_type = "t3.micro"
 
-  user_data = <<-EOF
+  user_data = base64encode(<<-EOF
               #!/bin/bash
               echo "Hello, World!" > index.html
               nohup python3 -m http.server 80 &
-              EOF
+            EOF
+  )
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  vpc_security_group_ids = [aws_security_group.allow_http.id]
 }
 
 # Application Load Balancer
@@ -144,8 +143,12 @@ resource "aws_lb_listener_rule" "asg" {
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "example" {
-  launch_configuration = aws_launch_configuration.example.name
-  vpc_zone_identifier  = [data.aws_subnet.default.id] # ✅ Must be a list
+  launch_template {
+    id      = aws_launch_template.example.id
+    version = "$Latest"
+  }
+
+  vpc_zone_identifier  = data.aws_subnets.selected.ids
   target_group_arns    = [aws_lb_target_group.example.arn]
   health_check_type    = "ELB"
   min_size             = 1
