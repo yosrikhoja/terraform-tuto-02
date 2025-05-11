@@ -1,5 +1,7 @@
-output public_ip {
-    description = "Public IP of the instance"
+
+output "alb_dns_name" {
+    description = "DNS name of the ALB"
     sensitive   = false
-    value       = aws_instance.example.public_ip
+    value       = aws_lb.example.dns_name
+  
 }
