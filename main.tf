@@ -15,7 +15,7 @@ resource "aws_instance" "example" {
   user_data = <<-EOF
               #!/bin/bash
               echo "Hello, World!" > index.html
-              nohup python3 -m http.server 80 &
+              nohup python3 -m http.server ${var.server_port} &
               EOF
     user_data_replace_on_change = true
     tags = {
@@ -27,8 +27,8 @@ resource "aws_security_group" "allow_http" {
   description = "Allow HTTP traffic"
 
   ingress {
-  from_port   = 80
-  to_port     = 80
+  from_port   = var.server_port
+  to_port     = var.server_port
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
