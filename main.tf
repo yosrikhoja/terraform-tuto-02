@@ -15,16 +15,13 @@ data "aws_vpc" "default" {
 }
 
 # Fetch a single subnet by CIDR block (adjust this to your target subnet)
-data "aws_subnet" "default" {
+data "aws_subnets" "selected" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
 
-  filter {
-    name   = "cidr-block"
-    values = ["172.31.64.0/20"] 
-  }
+  
 }
 
 # Security group for EC2
